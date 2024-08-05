@@ -11,7 +11,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import skew, kurtosis
 
-
 st.header("Ejercicio: • Tiempo en horas de funcionamiento de 100 piezas de cierto dispositivo electrónico, transforma los datos para mejorar la simetría.")
 
 # Datos
@@ -98,7 +97,6 @@ def transformar_intervalos_y_frecuencias(df, transformacion):
         try:
             intervalos_transformados.append(tuple(map(float, x.split('-'))))
         except ValueError:
-            # Manejar casos en que los intervalos no son convertibles a float
             intervalos_transformados.append((float('nan'), float('nan')))
 
     intervalos_originales = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8), (8, 9)]
@@ -156,48 +154,26 @@ if st.button('Obtener la Mejor Transformación'):
     transformaciones = ['Original', 'y = x^2', 'y = sqrt(x)', 'y = ln(x)', 'y = 1/x']
     mejor, resultados = mejor_transformacion(df, transformaciones)
     
-    st.write(f'La mejor transformación en términos de simetría es: {mejor}')
-    st.write('Asimetría de cada transformación:')
-    for t, s in resultados.items():
-        st.write(f'{t}: {s:.2f}')
+    st.write(f"La mejor transformación en términos de simetría es: {mejor}")
 
-# Mostrar el DataFrame original y el transformado en Streamlit
-st.write('Datos Originales de la Frecuencia de Piezas por Intervalo de Tiempo')
-st.dataframe(df)
+    # Mostrar los resultados
+    st.write("Simetría de cada transformación:")
+    for trans, sim in resultados.items():
+        st.write(f"{trans}: {sim}")
 
-# Aplicar la transformación seleccionada y mostrar los resultados
-df_transformado, intervalo_col, frecuencia_col = transformar_intervalos_y_frecuencias(df, transformacion)
+# Mostrar los histogramas
+def mostrar_histograma(df, frecuencia_col, title):
+    plt.figure(figsize=(10, 6))
+    plt.bar(df['Intervalo'], df[frecuencia_col])
+    plt.xticks(rotation=90)
+    plt.xlabel('Intervalo')
+    plt.ylabel('Frecuencia')
+    plt.title(title)
+    st.pyplot(plt)
 
-st.write('Datos Transformados')
-st.dataframe(df_transformado)
-
-# Crear histogramas y calcular asimetría y curtosis
-# Frecuencias originales
-skew_original, kurtosis_original = calcular_simetria_y_curtosis(df['Frecuencia'])
-st.write(f'Asimetría de las frecuencias originales: {skew_original:.2f}')
-st.write(f'Curtosis de las frecuencias originales: {kurtosis_original:.2f}')
-
-# Frecuencias transformadas
-skew_transformado, kurtosis_transformado = calcular_simetria_y_curtosis(df_transformado['Nueva frecuencia'])
-st.write(f'Asimetría de las frecuencias transformadas: {skew_transformado:.2f}')
-st.write(f'Curtosis de las frecuencias transformadas: {kurtosis_transformado:.2f}')
-
-# Graficar histogramas
-fig, ax = plt.subplots(1, 2, figsize=(14, 6))
-
-# Histograma de frecuencias originales
-ax[0].bar(df['Intervalo'], df['Frecuencia'], color='skyblue')
-ax[0].set_title('Histograma de Frecuencias Originales')
-ax[0].set_xlabel('Intervalo')
-ax[0].set_ylabel('Frecuencia')
-
-# Histograma de frecuencias transformadas
-ax[1].bar(df_transformado['Nuevo intervalo'], df_transformado['Nueva frecuencia'], color='lightgreen')
-ax[1].set_title(f'Histograma de Frecuencias Transformadas ({transformacion})')
-ax[1].set_xlabel('Intervalo')
-ax[1].set_ylabel('Frecuencia')
-
-st.pyplot(fig)
-
-
-st.sidebar.write("© 2024 Creado por: Javier Horacio Pérez Ricárdez")
+# Mostrar histogramas
+if transformacion == 'Original':
+    mostrar_histograma(df, 'Frecuencia', 'Histograma de Frecuencias Originales')
+else:
+    df_transformado, _, _ = transformar_intervalos_y_frecuencias(df, transformacion)
+    mostrar_histograma(df_transformado, 'Nueva frecuencia', f'Histograma de Frecuencias Transformadas ({transformacion})')

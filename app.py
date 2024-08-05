@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug  5 08:39:34 2024
-
-@author: jperezr
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug  5 08:39:34 2024
-
-@author: jperezr
-"""
-
 import streamlit as st
 import pandas as pd
 import numpy as np

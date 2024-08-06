@@ -192,5 +192,9 @@ ax[1].set_ylabel('Frecuencia')
 
 st.pyplot(fig)
 
+# Create 1 buttons that link to Google
+if st.button('Calcular nuevas frecuencias'):
+    st.write('[Calcular nuevas frecuencias](https://frecuencias-actualizadas-nytfhpgowatameha4hbg5t.streamlit.app/)')
+
 
 st.sidebar.write("© 2024 Creado por: Javier Horacio Pérez Ricárdez")
